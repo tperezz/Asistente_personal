@@ -3,9 +3,11 @@ import pyttsx3
 import webbrowser
 import subprocess
 import time
+import csv
 
 class Asistente():
     def __init__(self):
+        self.nombre = self.get_nombre()
         self.engine = pyttsx3.init()
         self.running = True
         self.callado = False
@@ -16,9 +18,40 @@ class Asistente():
         self.engine.runAndWait()
 
     def saludar(self):
-        self.speak('Hola Tomás, soy Jarvis. ¿Cómo estás? ¿Necesitas algo?')
+        if self.nombre == '':
+            self.speak('Hola, soy Jarvis. ¿Cómo te llamas?')
+            recognizer = sr.Recognizer()
+            with sr.Microphone() as source:
+                print("Escuchando...")
+                audio = recognizer.listen(source, timeout=30)
+            try:
+                self.nombre = recognizer.recognize_google(audio, language='es-ES')
+                self.set_nombre(self.nombre)
+                print("Se reconoció:", self.nombre)
+                self.speak(f'Hola {self.nombre}, ¿cómo estás? ¿Necesitas algo?')
+                self.escuchar()
+            except sr.UnknownValueError:
+                self.speak("Lo siento, no entendí eso.")
+            except sr.RequestError:
+                self.speak("Lo siento, ha ocurrido un error en la conexión.")
+        else:
+            self.speak(f'Hola de nuevo {self.nombre}, ¿necesitas algo?')
         self.escuchar()
     
+    def get_nombre(self):
+        try:
+            with open('conf.csv', newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                nombre = next(reader)[0]
+        except Exception:
+            nombre = ''
+        return nombre
+    
+    def set_nombre(self, nombre):
+        with open('conf.csv', 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([nombre])
+
     def despedir(self):
         self.speak('Adiós')
 
