@@ -2,56 +2,26 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import subprocess
-import time
-import csv
+from datetime import datetime
+import locale
+locale.setlocale(locale.LC_TIME, 'es_ES')
 
 class Asistente():
     def __init__(self):
-        self.nombre = self.get_nombre()
         self.engine = pyttsx3.init()
         self.running = True
         self.callado = False
         self.saludar()
+        
         
     def speak(self, text):
         self.engine.say(text)
         self.engine.runAndWait()
 
     def saludar(self):
-        if self.nombre == '':
-            self.speak('Hola, soy Jarvis. ¿Cómo te llamas?')
-            recognizer = sr.Recognizer()
-            with sr.Microphone() as source:
-                print("Escuchando...")
-                audio = recognizer.listen(source, timeout=30)
-            try:
-                self.nombre = recognizer.recognize_google(audio, language='es-ES')
-                self.set_nombre(self.nombre)
-                print("Se reconoció:", self.nombre)
-                self.speak(f'Hola {self.nombre}, ¿cómo estás? ¿Necesitas algo?')
-                self.escuchar()
-            except sr.UnknownValueError:
-                self.speak("Lo siento, no entendí eso.")
-            except sr.RequestError:
-                self.speak("Lo siento, ha ocurrido un error en la conexión.")
-        else:
-            self.speak(f'Hola de nuevo {self.nombre}, ¿necesitas algo?')
+        self.speak('Hola Tomás, soy Jarvis. ¿Cómo estás? ¿Necesitas algo?')
         self.escuchar()
     
-    def get_nombre(self):
-        try:
-            with open('conf.csv', newline='') as csvfile:
-                reader = csv.reader(csvfile)
-                nombre = next(reader)[0]
-        except Exception:
-            nombre = ''
-        return nombre
-    
-    def set_nombre(self, nombre):
-        with open('conf.csv', 'a', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow([nombre])
-
     def despedir(self):
         self.speak('Adiós')
 
@@ -62,6 +32,7 @@ class Asistente():
             audio = recognizer.listen(source, timeout=30)
         try:
             texto = recognizer.recognize_google(audio, language='es-ES')
+            texto = texto.lower()
             print("Se reconoció:", texto)
             self.procesar_comando(texto)
         except sr.UnknownValueError:
@@ -79,15 +50,21 @@ class Asistente():
             elif 'transcribir' in comando:
                 self.speak('Qué te gustaría transcribir?')
                 self.transcribir()
-            elif 'dictar' in comando or 'dictado' in comando:
-                self.speak('Qué te gustaría dictarme?')
-                self.dictar_texto()
+            elif 'mails' in comando:
+                self.abrir_mail()
             elif 'Buscar' in comando or 'Google' in comando or 'buscar' in comando:
                 self.speak('Qué te gustaría buscar?')
                 self.buscar_en_google()
+            elif 'fecha' in comando:
+                fecha = hoy.strftime("%d de %B") 
+                dia = hoy.strftime("%A")
+                self.speak(f'Hoy es {dia} {fecha}')
+            elif 'hora' in comando:
+                hora = hoy.strftime("%H y %M")
+                self.speak(f'Son las {hora}')
             elif 'no gracias' in comando or 'silencio' in comando:
                 self.callado = True
-            elif 'Stop' in comando or 'adiós' in comando:
+            elif 'stop' in comando or 'adiós' in comando:
                 self.running = False
             else:
                 self.speak('Perdon, no entendí el comando')
@@ -125,27 +102,11 @@ class Asistente():
             except sr.RequestError:
                 self.speak("Lo siento, ha ocurrido un error en la conexión.")
                 self.escuchar()
-                
-    def dictar_texto(self):
-        recognizer = sr.Recognizer()
-        with open("dictado.txt", "a") as archivo:
-            subprocess.Popen(['notepad.exe', 'dictado.txt'])
-            time.sleep(1) 
-            try:
-                with sr.Microphone() as source:
-                    self.speak("Empieza a dictar. Di 'fin' para terminar.")
-                    while True:
-                        audio = recognizer.listen(source)
-                        texto = recognizer.recognize_google(audio, language='es-ES')
-                        print("Texto dictado:", texto)
-                        archivo.write(texto + '\n')
-                        archivo.flush()  # Asegúrate de que el contenido se escriba inmediatamente
-                        if texto.lower() == 'fin':
-                            break
-            except sr.RequestError as e:
-                print("Error al reconocer la voz:", e)
-            except sr.UnknownValueError:
-                print("No se ha entendido lo que dijiste.")
+                    
+    def abrir_mail(self):
+        url_mail = 'https://mail.google.com/mail/u/0/#inbox'
+        webbrowser.open(url_mail)
+        self.speak('Abriendo los mails...')
     
     def buscar_en_google(self):
         recognizer = sr.Recognizer()
@@ -164,16 +125,15 @@ class Asistente():
             self.speak("Lo siento, ha ocurrido un error en la conexión.")
                 
 
-asistente = Asistente()
-while asistente.running:
-    if not asistente.callado:
-        asistente.escuchar()
-    while asistente.callado:
-        asistente.silencio()
-        if not asistente.running:
+hoy = datetime.now()
+jarvis = Asistente()
+while jarvis.running:
+    if not jarvis.callado:
+        jarvis.escuchar()
+    while jarvis.callado:
+        jarvis.silencio()
+        if not jarvis.running:
             break
-    if not asistente.running:
+    if not jarvis.running:
             break
-asistente.despedir()
-
-    
+jarvis.despedir()
