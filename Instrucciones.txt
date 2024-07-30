@@ -1,0 +1,37 @@
+Guía de Usuario de Luna: Asistente de Voz Personal
+Descripción General
+Luna es un asistente de voz personal diseñado para ejecutar diversas tareas mediante comandos de voz. Utiliza reconocimiento de voz para interpretar tus instrucciones y realizar acciones específicas.
+
+Comandos Disponibles
+Saludo
+"Luna": Llama la atención de Luna para comenzar a dar instrucciones.
+
+Funcionalidades
+"Clima": Proporciona el clima actual en tu ubicación.
+"Noticias": Muestra las noticias más recientes.
+"Fecha": Informa la fecha actual.
+"Hora": Indica la hora actual.
+"Transcribir": Transcribe el audio captado por el micrófono.
+"Abrir Mails": Abre la bandeja de entrada de correo electrónico.
+"Buscar en Google": Realiza una búsqueda en Google basada en la consulta dada.
+"Temporizador": Inicia un temporizador y emite una alerta cuando finaliza.
+
+Modo Silencio
+"Silencio": Coloca a Luna en modo de espera, donde no responderá a comandos hasta que se le llame nuevamente.
+"Escúchame": Sale del modo silencio y vuelve a estar activa para recibir comandos.
+
+Finalizar
+"Stop" o "Adiós": Termina la sesión con Luna y cierra el programa.
+
+Ejemplos de Uso
+"Luna, ¿cuál es el clima hoy?"
+"Luna, transcribe esta conversación."
+"Luna, abre mi correo electrónico."
+"Luna, busca recetas de cocina en Google."
+"Luna, pon un temporizador de 15 minutos."
+
+"Luna, silencio."
+Notas Importantes
+- Habla claramente y en un tono normal para que Luna pueda entender tus instrucciones correctamente.
+- Espera a que Luna termine de ejecutar una acción antes de darle otro comando.
+- Si experimentas algún problema técnico, comunícalo para su corrección.
