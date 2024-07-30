@@ -1,0 +1,5 @@
+speechrecognition==3.8.1
+pyttsx3==2.90
+firebase-admin==5.1.0
+PyAudio
+newsapi
